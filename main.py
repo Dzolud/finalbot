@@ -7,15 +7,10 @@ import requests
 import json
 
 
-
 morph = pymorphy2.MorphAnalyzer()
 wikipedia.set_lang("ru")
 
-
-
-
 bot = telebot.TeleBot('5385406247:AAGCPE_X1JOqoh0k6PbhAcHXR-NOkuFyO7c')
-
 
 
 @bot.message_handler(commands=["start"])
@@ -28,7 +23,6 @@ def start(message, res=False):
     bot.send_message(message.chat.id, 'Я на связи. Напиши мне что-нибудь )', reply_markup=markup_registration)
 
 
-
 markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
 btn1_1 = types.KeyboardButton("Цифры")
 btn2_1 = types.KeyboardButton("Слова")
@@ -37,20 +31,16 @@ btn4_1 = types.KeyboardButton("Добавить в закладки")
 markup.add(btn1_1, btn2_1, btn3_1,
            btn4_1)
 
-
 markup_first_step = types.ReplyKeyboardMarkup(resize_keyboard=True)
 btn1_2 = types.KeyboardButton("Поиск")
 btn2_2 = types.KeyboardButton("Последние")
 btn3_2 = types.KeyboardButton("Помощь")
 markup_first_step.add(btn1_2, btn2_2, btn3_2)
 
-
 markup_second_step = types.ReplyKeyboardMarkup(resize_keyboard=True)
 btn1_3 = types.KeyboardButton("Оу, я это уже видел")
 btn2_3 = types.KeyboardButton("Это что-то новинькое")
 markup_second_step.add(btn1_3, btn2_3)
-
-
 
 
 @bot.message_handler(content_types=["text"])
@@ -75,21 +65,15 @@ def func(message):
             r = bot.send_message(message.chat.id, text="Напиши слово", reply_markup=types.ReplyKeyboardRemove())
             bot.register_next_step_handler(r, string_answer)
 
-
         if message.text == "Фильмы":
             bot.send_message(message.chat.id, text="Выберите опцию", reply_markup=markup_first_step)
-
-
-
 
         if message.text == "Помощь":
             helper(message)
 
-
         if message.text == "Поиск":
             r = bot.send_message(message.chat.id, text="Напиши фильм", reply_markup=types.ReplyKeyboardRemove())
             bot.register_next_step_handler(r, film_answer)
-
 
         if message.text == "Последние":
             re = requests.get(f'http://localhost:5000/api/get_last_film/{message.chat.id}').json()
@@ -100,19 +84,6 @@ def func(message):
 
     else:
         bot.send_message(message.chat.id, 'Пожалуйста, пройдите регистрацию')
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 def login_check(message):
@@ -196,11 +167,6 @@ def string_answer(message):
     bot.register_next_step_handler(r, is_bookmark, message.text)
 
 
-
-
-
-
-
 def rating(message, film_name):
     if message.text == "Оу, я это уже видел":
         r = bot.send_message(message.chat.id, text="Это прекрасно, Оцените фильм от 1 до 10", reply_markup=types.ReplyKeyboardRemove())
@@ -208,7 +174,6 @@ def rating(message, film_name):
 
     if message.text == "Это что-то новинькое":
         bot.send_message(message.chat.id, text="Очень хороший фильм, советую посмотреть)", reply_markup=markup)
-
 
 
 def save_rating(message, film_name):
@@ -229,7 +194,6 @@ def save_rating(message, film_name):
                 if re['error'] == 'No error':
                     gen = re['genres']
 
-
                     if gen:
                         gen = json.loads(gen.replace("'", '"'))
                         for i in gg:
@@ -247,7 +211,6 @@ def save_rating(message, film_name):
                           json={'gen': js_dik}).json()
 
 
-
             r = bot.send_message(message.chat.id, "Спасибо за оценку)", reply_markup=markup)
             bot.register_next_step_handler(r, is_bookmark, film_name)
         else:
@@ -258,7 +221,7 @@ def save_rating(message, film_name):
         bot.register_next_step_handler(r, save_rating, film_name)
 
 
-#adcshcuisjic
+
 def rr(message):
     try:
         ny = wikipedia.page(message.text)
@@ -305,7 +268,6 @@ def film_answer(message):
 
         re = response.json()
 
-
         poster = requests.get(re['films'][0]['posterUrl'])
         out = open("img.jpg", "wb")
         out.write(poster.content)
@@ -326,7 +288,6 @@ def film_answer(message):
         bot.send_message(message.chat.id, text='Такой фильм не найден', reply_markup=markup)
 
 
-
 def is_prime(n):
     if n < 2:
         return 'Составное'
@@ -341,7 +302,6 @@ def is_prime(n):
     return 'Простое'
 
 
-
 def helper(message):
 
     re = requests.get(f'http://localhost:5000/api/get_genres/{message.chat.id}').json()
@@ -351,18 +311,15 @@ def helper(message):
         print(w)
         print(type(w))
 
-
         e = []
 
         for i in w.keys():
             e.append(i)
 
-
         e = e[:3]
         q = {}
         list_second_step = []
         q1 = {}
-
 
         response = requests.get(
             'https://kinopoiskapiunofficial.tech/api/v2.2/films/top?type=TOP_100_POPULAR_FILMS&page=1',
@@ -402,13 +359,11 @@ def helper(message):
         print([i for i in ff.keys()])
         name = [i for i in ff.keys()][-1]
 
-
         response = requests.get(
             f'https://kinopoiskapiunofficial.tech/api/v2.1/films/search-by-keyword?keyword={name}&page=1',
             headers={'X-API-KEY': "7f118a01-f5a2-4b10-b7ea-85463dff50e2"
                      })
         re = response.json()
-
 
         p = requests.get(re['films'][0]['posterUrl'])
         out = open("img.jpg", "wb")
