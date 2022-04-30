@@ -91,7 +91,6 @@ def login_check(message):
     re = requests.get('http://localhost:5000/api/logins_for_registration').json()
     logins = re['logins']
 
-
     if message.text in logins:
         bot.send_message(message.chat.id, 'Такой логин уже существует')
         r = bot.send_message(message.chat.id, text="Попоробуйте другой")
@@ -113,10 +112,10 @@ def end_authorization(message, login):
 def answer_number(message):
     q = message.text
 
-    print(requests.post('http://localhost:5000/api/create_history_post',
+    requests.post('http://localhost:5000/api/create_history_post',
                         json={'chat_id': message.chat.id,
                               'request': q,
-                              'subject': 'number'}).json())
+                              'subject': 'number'}).json()
 
     if q.isdigit():
         if int(q) < 1000:
@@ -142,13 +141,12 @@ def answer_number(message):
 
 def string_answer(message):
 
-    print(requests.post('http://localhost:5000/api/create_history_post',
+    requests.post('http://localhost:5000/api/create_history_post',
                         json={'chat_id': message.chat.id,
                               'request': message.text,
-                              'subject': 'word'}).json())
+                              'subject': 'word'}).json()
 
     p = morph.parse(message.text)[0]
-    print(p.tag.POS, p.tag.animacy, p.tag.aspect, p.tag.case, p.tag.gender, p.tag.involvement, p.tag.mood, p.tag.number, p.tag.person, p.tag.tense, p.tag.transitivity, p.tag.voice)
     r = bot.send_message(message.chat.id, text=f"Часть речи:{p.tag.POS}\n"
                                            f"Одушевленность:{p.tag.animacy}\n"
                                            f"Вид:{p.tag.aspect}\n"
@@ -185,7 +183,6 @@ def save_rating(message, film_name):
 
     re = response.json()
 
-    print(re['films'][0]['genres'])
     gg = [i['genre'].capitalize() for i in re['films'][0]['genres']]
     try:
         if 0 < int(message.text) <= 10:
@@ -256,10 +253,10 @@ def is_bookmark(message, content):
 
 def film_answer(message):
 
-    print(requests.post('http://localhost:5000/api/create_history_post',
+    requests.post('http://localhost:5000/api/create_history_post',
                         json={'chat_id': message.chat.id,
                               'request': message.text,
-                              'subject': 'film'}).json())
+                              'subject': 'film'}).json()
     try:
 
         response = requests.get(
@@ -309,8 +306,6 @@ def helper(message):
     if re['genres']:
         gen = re['genres']
         w = json.loads(gen.replace("'", '"'))
-        print(w)
-        print(type(w))
 
         e = []
 
@@ -334,15 +329,10 @@ def helper(message):
             f = ", ".join(i['genre'].capitalize() for i in re['films'][i]['genres'])
             q[re['films'][i]['nameRu']] = f, re['films'][i]['rating']
 
-        print(q)
-        print(e)
-
         for i in q.keys():
             for j in e:
                 if j in q[i][0].split(", "):
                     list_second_step.append(i)
-
-        print(list_second_step)
 
         for i in list_second_step:
             if i not in q1:
@@ -357,7 +347,6 @@ def helper(message):
         for i in list_last_step:
             last[i] = q[i][-1]
         ff = dict(sorted(last.items(), key=lambda x: x[-1]))
-        print([i for i in ff.keys()])
         name = [i for i in ff.keys()][-1]
 
         response = requests.get(
@@ -365,7 +354,6 @@ def helper(message):
             headers={'X-API-KEY': "7f118a01-f5a2-4b10-b7ea-85463dff50e2"
                      })
         re = response.json()
-        print(re)
 
         p = requests.get(re['films'][0]['posterUrl'])
         out = open("img.jpg", "wb")
@@ -385,13 +373,10 @@ def helper(message):
                                                        f"Страна Производства: {ff}\nЖанр: {f}\n"
                                                        f"Рэйтинг: {re['films'][0]['rating']}", reply_markup=markup)
 
-
-
         print(requests.post('http://localhost:5000/api/create_history_post',
                             json={'chat_id': message.chat.id,
                                   'request': re['films'][0]['nameRu'],
                                   'subject': 'film'}).json())
-
 
         bot.register_next_step_handler(r, is_bookmark, re['films'][0]['nameRu'])
     else:
