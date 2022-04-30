@@ -373,14 +373,12 @@ def helper(message):
         q = open("img.jpg", "rb")
         f = ", ".join(i['genre'].capitalize() for i in re['films'][0]['genres'])
         ff = ", ".join(i['country'] for i in re['films'][0]['countries'])
-        r = bot.send_photo(message.chat.id, q, caption=f"Советую посмотреть:\n"
-                                                       f"Название: {re['films'][0]['nameRu']}\n"
-                                                       f"Название в оригинале: {re['films'][0]['nameEn']}\n"
+        r = bot.send_photo(message.chat.id, q, caption=f"Советую посмотреть:\nНазвание: {re['films'][0]['nameRu']}\n"
+                                                       f"Название в оригинале: {re['films'][0]['nameRU']}\n"
                                                        f"Описание: {re['films'][0]['description']}\n"
                                                        f"Длина фильма: {re['films'][0]['filmLength']}\n"
-                                                       f"Страна Производства: {ff}\n"
-                                                       f"Жанр: {f}\n"
-                                                       f"Рэйтинг: {re['films'][0]['rating']}\n", reply_markup=markup)
+                                                       f"Страна Производства: {ff}\nЖанр: {f}\n"
+                                                       f"Рэйтинг: {re['films'][0]['rating']}", reply_markup=markup)
 
 
 
