@@ -144,7 +144,8 @@ def string_answer(message):
 
     print(requests.post('http://localhost:5000/api/create_history_post',
                         json={'chat_id': message.chat.id,
-                              'request': message.text}).json())
+                              'request': message.text,
+                              'subject': 'word'}).json())
 
     p = morph.parse(message.text)[0]
     print(p.tag.POS, p.tag.animacy, p.tag.aspect, p.tag.case, p.tag.gender, p.tag.involvement, p.tag.mood, p.tag.number, p.tag.person, p.tag.tense, p.tag.transitivity, p.tag.voice)
