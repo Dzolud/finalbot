@@ -365,6 +365,7 @@ def helper(message):
             headers={'X-API-KEY': "7f118a01-f5a2-4b10-b7ea-85463dff50e2"
                      })
         re = response.json()
+        print(re)
 
         p = requests.get(re['films'][0]['posterUrl'])
         out = open("img.jpg", "wb")
@@ -373,8 +374,12 @@ def helper(message):
         q = open("img.jpg", "rb")
         f = ", ".join(i['genre'].capitalize() for i in re['films'][0]['genres'])
         ff = ", ".join(i['country'] for i in re['films'][0]['countries'])
+        if 'nameEn' in re['films'][0]:
+            na = re['films'][0]['nameEn']
+        else:
+            na = re['films'][0]['nameRu']
         r = bot.send_photo(message.chat.id, q, caption=f"Советую посмотреть:\nНазвание: {re['films'][0]['nameRu']}\n"
-                                                       f"Название в оригинале: {re['films'][0]['nameRU']}\n"
+                                                       f"Название в оригинале: {na}\n"
                                                        f"Описание: {re['films'][0]['description']}\n"
                                                        f"Длина фильма: {re['films'][0]['filmLength']}\n"
                                                        f"Страна Производства: {ff}\nЖанр: {f}\n"
